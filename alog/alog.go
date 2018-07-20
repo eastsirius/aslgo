@@ -1,7 +1,11 @@
 // 日志主接口文件
 package alog
 
-import "time"
+import (
+	"time"
+	"strings"
+	"errors"
+)
 
 const (
 	LogLevel_Debug = iota;
@@ -23,6 +27,20 @@ var levelString = [logLevel_Num]string {
 
 func GetLogLevelString(level int) string {
 	return levelString[level]
+}
+
+func ParseLogLevelString(level string) (int, error) {
+	for i, v := range levelString {
+		if strings.ToUpper(strings.TrimSpace(v)) == strings.ToUpper(level) {
+			return i, nil
+		}
+	}
+
+	if strings.ToUpper("warning") == strings.ToUpper(level) {
+		return LogLevel_Warn, nil
+	}
+
+	return -1, errors.New("unknown log level: " + level)
 }
 
 
