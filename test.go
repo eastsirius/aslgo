@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"aslgo/internal/test"
 	_ "aslgo/internal/alog_test"
+	_ "aslgo/internal/agui_test"
 )
 
 func main() {
