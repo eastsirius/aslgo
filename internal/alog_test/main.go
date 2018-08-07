@@ -27,8 +27,10 @@ func (tm *alogTestModule) DoTest() {
 	fout.Path = "alog_test"
 	alog.AddOutput(fout)
 
+	count := 0
 	for {
-		alog.ErrorPrint("log test")
+		count++
+		alog.ErrorPrint("log test", count)
 		time.Sleep(time.Second)
 	}
 }
