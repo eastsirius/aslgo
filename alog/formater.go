@@ -21,14 +21,7 @@ func NewBasicFormater() Formater {
 }
 
 func (bf *basicFormater) Format(log *LogParam) string {
-	msg := ""
-	for _, v := range log.Args {
-		if msg != "" {
-			msg += " "
-		}
-		msg += fmt.Sprint(v)
-	}
-
+	msg := fmt.Sprint(log.Args...)
 	tm_string := log.Time.Format("15:04:05.000")
 	return tm_string + " [" + GetLogLevelString(log.Level) + "] " + msg
 }

@@ -13,3 +13,6 @@
 
 # GoLand files
 .idea
+
+# debug path
+debug

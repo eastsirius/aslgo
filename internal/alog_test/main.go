@@ -2,8 +2,9 @@
 package alog_test
 
 import (
-	"fmt"
 	"aslgo/internal/test"
+	"aslgo/alog"
+	"time"
 )
 
 func init() {
@@ -19,5 +20,15 @@ func NewAlogTestModule() *alogTestModule {
 }
 
 func (tm *alogTestModule) DoTest() {
-	fmt.Print("alog test")
+	alog.SetLogLevel(alog.LogLevel_Debug)
+	alog.ClearOutpus()
+	alog.AddOutput(alog.NewConsoleWriter())
+	fout := alog.NewFileWriter()
+	fout.Path = "alog_test"
+	alog.AddOutput(fout)
+
+	for {
+		alog.ErrorPrint("log test")
+		time.Sleep(time.Second)
+	}
 }

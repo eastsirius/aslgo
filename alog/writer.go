@@ -194,18 +194,26 @@ func (writer *FileWriter) workerProc() {
 }
 
 func (writer *FileWriter) tickProc(tm *time.Time) {
-	writer.fileLock.Lock()
-	defer writer.fileLock.Unlock()
-	writer.closeFile()
+	deleteTimeout, deleteOverLimit := writer.SavedTime > 0, writer.MaxSize > 0
 
-	files, paths, err := writer.findFiles()
-	if err != nil {
-		return
+	if deleteTimeout || deleteOverLimit {
+		writer.fileLock.Lock()
+		defer writer.fileLock.Unlock()
+		writer.closeFile()
+
+		files, paths, err := writer.findFiles()
+		if err != nil {
+			return
+		}
+
+		if deleteTimeout {
+			files = writer.deleteTimeoutFiles(files, tm)
+		}
+		if deleteOverLimit {
+			files = writer.deleteOverLimitFile(files)
+		}
+		writer.deleteEmptyDirs(paths)
 	}
-
-	files = writer.deleteTimeoutFiles(files, tm)
-	files = writer.deleteOverLimitFile(files)
-	writer.deleteEmptyDirs(paths)
 }
 
 func (writer *FileWriter) findFiles() (map[time.Time] *fileInfo, []string, error) {
@@ -276,8 +284,8 @@ func (writer *FileWriter) deleteEmptyDirs(dirs []string) {
 		deleteDir = false
 		for _, v := range dirs {
 			if v != "" {
-				fs, _ := ioutil.ReadDir(v)
-				if len(fs) == 0 {
+				fs, err := ioutil.ReadDir(v)
+				if err == nil && len(fs) == 0 {
 					os.Remove(v)
 					v = ""
 					deleteDir = true
