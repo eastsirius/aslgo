@@ -4,8 +4,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"aslgo/internal/test"
-	_ "aslgo/internal/alog_test"
+	"github.com/eastsirius/aslgo/internal/test"
+	_ "github.com/eastsirius/aslgo/internal/alog_test"
 )
 
 func main() {

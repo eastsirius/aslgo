@@ -34,9 +34,14 @@ func newLogContext() *logContext {
 }
 
 func (ctx *logContext) logPrint(level int, a []interface{}) {
+	ctx.logPrintf(level, "", a)
+}
+
+func (ctx *logContext) logPrintf(level int, format string, a []interface{}) {
 	parm := &LogParam{
 		Time: time.Now(),
 		Level: level,
+		Format: format,
 		Args: a,
 	}
 	ctx.queue <- parm

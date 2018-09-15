@@ -47,6 +47,7 @@ func ParseLogLevelString(level string) (int, error) {
 type LogParam struct {
 	Time time.Time
 	Level int
+	Format string
 	Args []interface{}
 }
 
@@ -63,24 +64,48 @@ func LogPrint(level int, a ...interface{}) {
 	logger.logPrint(level, a)
 }
 
-func DebugPrint(a  ...interface{}) {
+func DebugPrint(a ...interface{}) {
 	logger.logPrint(LogLevel_Debug, a)
 }
 
-func InfoPrint(a  ...interface{}) {
+func InfoPrint(a ...interface{}) {
 	logger.logPrint(LogLevel_Info, a)
 }
 
-func NotifyPrint(a  ...interface{}) {
+func NotifyPrint(a ...interface{}) {
 	logger.logPrint(LogLevel_Notify, a)
 }
 
-func WarnPrint(a  ...interface{}) {
+func WarnPrint(a ...interface{}) {
 	logger.logPrint(LogLevel_Warn, a)
 }
 
-func ErrorPrint(a  ...interface{}) {
+func ErrorPrint(a ...interface{}) {
 	logger.logPrint(LogLevel_Error, a)
+}
+
+func LogPrintf(level int, format string, a ...interface{}) {
+	logger.logPrintf(level, format, a)
+}
+
+func DebugPrintf(format string, a ...interface{}) {
+	logger.logPrintf(LogLevel_Debug, format, a)
+}
+
+func InfoPrintf(format string, a ...interface{}) {
+	logger.logPrintf(LogLevel_Info, format, a)
+}
+
+func NotifyPrintf(format string, a ...interface{}) {
+	logger.logPrintf(LogLevel_Notify, format, a)
+}
+
+func WarnPrintf(format string, a ...interface{}) {
+	logger.logPrintf(LogLevel_Warn, format, a)
+}
+
+func ErrorPrintf(format string, a ...interface{}) {
+	logger.logPrintf(LogLevel_Error, format, a)
 }
 
 

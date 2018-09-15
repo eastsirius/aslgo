@@ -19,13 +19,20 @@ type Writer interface {
 
 
 type ConsoleWriter struct {
+	Level int
 }
 
 func NewConsoleWriter() *ConsoleWriter {
-	return &ConsoleWriter{}
+	return &ConsoleWriter{
+		Level: LogLevel_Debug,
+	}
 }
 
 func (writer *ConsoleWriter) WriteLog(log *LogItem) error {
+	if log.Level < writer.Level {
+		return nil
+	}
+
 	fmt.Println(log.Log)
 	return nil
 }
@@ -55,6 +62,9 @@ func (fn *basicFileNamer) GetName(tm *time.Time) string {
 }
 
 type FileWriter struct {
+	// 日志等级
+	Level int
+
 	// 日志文件命名器
 	Namer FileNamer
 
@@ -80,18 +90,22 @@ type FileWriter struct {
 }
 
 func NewFileWriter() *FileWriter {
-	writer := &FileWriter{}
-	writer.Namer = &basicFileNamer{}
-	writer.FlushTime = 1
-	writer.MonitorTimer = 60
-	writer.fileLock = &sync.Mutex{}
-	writer.quitCtrl = make(chan int, 1)
-	writer.quitEvent = make(chan int, 1)
-
-	return writer
+	return &FileWriter{
+		Level: LogLevel_Debug,
+		Namer: &basicFileNamer{},
+		FlushTime: 1,
+		MonitorTimer: 60,
+		fileLock: &sync.Mutex{},
+		quitCtrl: make(chan int, 1),
+		quitEvent: make(chan int, 1),
+	}
 }
 
 func (writer *FileWriter) WriteLog(log *LogItem) error {
+	if log.Level < writer.Level {
+		return nil
+	}
+
 	fileName := writer.Namer.GetName(&log.Time)
 
 	writer.fileLock.Lock()

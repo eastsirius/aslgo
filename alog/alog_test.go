@@ -1,8 +1,10 @@
 package alog_test
 
-import "testing"
-import "alog"
+import (
+	"testing"
+	"github.com/eastsirius/aslgo/alog"
+)
 
 func TestLog(t *testing.T) {
-	alog.NotifyPrint("Hello log world!")
+	 alog.NotifyPrint("Hello log world!")
 }

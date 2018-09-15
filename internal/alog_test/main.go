@@ -2,8 +2,8 @@
 package alog_test
 
 import (
-	"aslgo/internal/test"
-	"aslgo/alog"
+	"github.com/eastsirius/aslgo/internal/test"
+	"github.com/eastsirius/aslgo/alog"
 	"time"
 )
 

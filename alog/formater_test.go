@@ -2,8 +2,8 @@ package alog_test
 
 import (
 	"testing"
-	"alog"
 	"time"
+	"github.com/eastsirius/aslgo/alog"
 )
 
 func TestFormater(t *testing.T) {
