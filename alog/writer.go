@@ -3,16 +3,17 @@ package alog
 
 import (
 	"fmt"
-	"time"
-	"os"
-	"sync"
-	"path/filepath"
 	"io/ioutil"
+	"os"
+	"path/filepath"
 	"strings"
+	"sync"
+	"time"
 )
 
 type Writer interface {
 	WriteLog(log *LogItem) error
+	ClearFile() error
 	Start()
 	Stop()
 }
@@ -34,6 +35,10 @@ func (writer *ConsoleWriter) WriteLog(log *LogItem) error {
 	}
 
 	fmt.Println(log.Log)
+	return nil
+}
+
+func (writer *ConsoleWriter) ClearFile() error {
 	return nil
 }
 
@@ -131,6 +136,17 @@ func (writer *FileWriter) WriteLog(log *LogItem) error {
 	return nil
 }
 
+func (writer *FileWriter) ClearFile() error {
+	writer.fileLock.Lock()
+	defer writer.fileLock.Unlock()
+
+	filename := writer.Path + "/" + writer.fileName
+	writer.closeFile()
+	os.Remove(filename)
+
+	return nil
+}
+
 func (writer *FileWriter) Start() {
 	go writer.workerProc()
 }
@@ -149,13 +165,13 @@ func (writer *FileWriter) reopenFile(fileName string) error {
 	index := strings.LastIndex(filePath, "/")
 	if index > 0 {
 		dirPath := filePath[:index]
-		err := os.MkdirAll(dirPath, 0777)
+		err := os.MkdirAll(dirPath, 0666)
 		if err != nil {
 			return err
 		}
 	}
 
-	file, err := os.OpenFile(filePath, os.O_APPEND | os.O_CREATE | os.O_SYNC | os.O_WRONLY, 0777)
+	file, err := os.OpenFile(filePath, os.O_APPEND | os.O_CREATE | os.O_SYNC | os.O_WRONLY, 0666)
 	if err != nil {
 		return err
 	}
